@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import logging
 import coloredlogs
 
@@ -8,6 +9,12 @@ coloredlogs.install(level=logging.INFO)
 
 input_file_name = "../data/StrongVsNormal_strings.txt"
 output_file_name = "../data/StrongVsNormal_board.csv"
+
+if len(sys.argv) > 1:
+    input_file_name = sys.argv[1]
+
+if len(sys.argv) > 2:
+    output_file_name = sys.argv[2]
 
 player_symbols = ["-1", "1"]
 rows = 6
