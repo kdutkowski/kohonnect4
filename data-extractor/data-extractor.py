@@ -43,7 +43,7 @@ with open(input_file_name, "r") as input_file, open(output_file_name, 'w') as ou
                 position -= cols
             board[position] = player_symbols[player_index]
             player_index = (player_index + 1) % 2
-            output_file.write(",".join(board) + "," + line[index+1] + "\n")
-            print_board(board)
-        logger.info("player symbol: %s, board: %s", player_symbols[player_index], ",".join(board))
+        output_file.write(",".join(board) + "," + str((int(line[-2]) - 1)) + "\n")
+        print_board(board)
+        logger.debug("player symbol: %s, board: %s", player_symbols[player_index], ",".join(board))
         line_number += 1
