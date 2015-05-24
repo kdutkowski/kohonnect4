@@ -1,0 +1,7 @@
+before_script:
+  - sudo apt-add-repository ppa:octave/stable --yes
+  - sudo apt-get update -y
+  - sudo apt-get install octave -y
+  - sudo apt-get install liboctave-dev -y
+script:
+  - sh -c "octave -q script/kohonnect4.m  data/6x7_example.csv"
