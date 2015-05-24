@@ -2,12 +2,13 @@ function normalized = normalize(x)
   if ~isvector(x)
       error('Input must be a vector')
   end
+  warning ("off"); %disable warning: division by zero
   normalized = x./sqrt(sum(x.^2));
   normalized(!isfinite(normalized))=0;
 end
 
-WIDTH = 2;
-HEIGHT = 2;
+WIDTH = 7;
+HEIGHT = 6;
 INPUTS = WIDTH*HEIGHT;
 
 weights = normalize(exprnd(1,WIDTH*INPUTS,1))';
@@ -23,18 +24,24 @@ for iteration = 1:1000
     to = (answers(example_index)+1)*INPUTS;
     winner_weights = weights(from:to);
     weights(from:to) = weights(from:to) + (example-winner_weights);
-    weights = normalize(weights); %Should we normalize all weights or only updated ones
-    %weights(from:to) = normalize(weights(from:to))
+    %weights = normalize(weights); %Should we normalize all weights or only updated ones
+    weights(from:to) = normalize(weights(from:to));
   endfor
 endfor
 
+actuals = answers;
 for example_index = 1:size(examples)
-  input_signal = weights.*[examples(example_index,:),examples(example_index,:)];
+  input = [];
+  for neuron_index = 1:WIDTH
+    input = [input examples(example_index,:)];
+  endfor
+  input_signal = weights.*input;
   output_index = 1:INPUTS: length(weights);
   neurons_outputs = zeros(WIDTH, 1);
   for output = 2:WIDTH
     neurons_outputs(output-1) = [sum(input_signal(output_index(output-1):output_index(output)))];
   endfor
   [value, index] =  max(neurons_outputs);
-  printf("Expected: %d%% Actual: %d%%\n", answers(example_index), index-1);
+  actuals(example_index) = index-1;
 endfor
+score = sum((actuals-answers) == 0) / length(answers)
