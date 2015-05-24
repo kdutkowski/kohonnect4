@@ -2,7 +2,6 @@ function normalized = normalize(x)
   if ~isvector(x)
       error('Input must be a vector')
   end
-  warning ("off"); %disable warning: division by zero
   normalized = x./sqrt(sum(x.^2));
   normalized(!isfinite(normalized))=0;
 end
@@ -10,6 +9,7 @@ end
 WIDTH = 7;
 HEIGHT = 6;
 INPUTS = WIDTH*HEIGHT;
+RATE = 0.01;
 
 weights = normalize(exprnd(1,WIDTH*INPUTS,1))';
 
@@ -17,13 +17,13 @@ data = csvread(argv(){1});
 examples = data(:, 1:INPUTS);
 answers = data(:, INPUTS+1);
 
-for iteration = 1:1000
+for iteration = 1:100
   for example_index = 1:size(examples)
     example = examples(example_index, :);
     from = 1+(answers(example_index))*INPUTS;
     to = (answers(example_index)+1)*INPUTS;
     winner_weights = weights(from:to);
-    weights(from:to) = weights(from:to) + (example-winner_weights);
+    weights(from:to) = weights(from:to) + RATE*(example-winner_weights);
     %weights = normalize(weights); %Should we normalize all weights or only updated ones
     weights(from:to) = normalize(weights(from:to));
   endfor
