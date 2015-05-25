@@ -11,7 +11,11 @@ HEIGHT = 6;
 INPUTS = WIDTH*HEIGHT;
 RATE = 0.01;
 
-weights = normalize(exprnd(1,WIDTH*INPUTS,1))';
+weights = exprnd(1,WIDTH*INPUTS,1)';
+
+for index = 0:7:length(weights)-WIDTH
+  weights(index+1:index+WIDTH) = normalize(weights(index+1:index+WIDTH));
+endfor
 
 data = csvread(argv(){1});
 examples = data(:, 1:INPUTS);
@@ -24,7 +28,6 @@ for iteration = 1:100
     to = (answers(example_index)+1)*INPUTS;
     winner_weights = weights(from:to);
     weights(from:to) = weights(from:to) + RATE*(example-winner_weights);
-    %weights = normalize(weights); %Should we normalize all weights or only updated ones
     weights(from:to) = normalize(weights(from:to));
   endfor
 endfor
