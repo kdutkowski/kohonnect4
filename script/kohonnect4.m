@@ -26,18 +26,13 @@ for iteration = 1:100
     example = examples(example_index, :);
     from = 1+(answers(example_index))*INPUTS;
     to = (answers(example_index)+1)*INPUTS;
-    winner_weights = weights(from:to);
-    weights(from:to) = weights(from:to) + RATE*(example-winner_weights);
-    weights(from:to) = normalize(weights(from:to));
+    weights(from:to) = normalize(weights(from:to) + RATE*(example-weights(from:to)));
   endfor
 endfor
 
 actuals = answers;
 for example_index = 1:size(examples)
-  input = [];
-  for neuron_index = 1:WIDTH
-    input = [input examples(example_index,:)];
-  endfor
+  input = repmat(examples(example_index,:), 1, WIDTH);
   input_signal = weights.*input;
   output_index = 1:INPUTS: length(weights);
   neurons_outputs = zeros(WIDTH, 1);
