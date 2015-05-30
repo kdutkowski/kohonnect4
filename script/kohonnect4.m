@@ -18,6 +18,10 @@ for index = 0:7:length(weights)-WIDTH
 endfor
 
 data = csvread(argv(){1});
+test_data = csvread(argv(){2});
+test_examples = test_data(:, 1:INPUTS);
+test_answers = test_data(:, INPUTS+1);
+
 examples = data(:, 1:INPUTS);
 answers = data(:, INPUTS+1);
 
@@ -30,9 +34,9 @@ for iteration = 1:100
   endfor
 endfor
 
-actuals = answers;
-for example_index = 1:size(examples)
-  input = repmat(examples(example_index,:), 1, WIDTH);
+actuals = test_answers;
+for example_index = 1:size(test_examples)
+  input = repmat(test_examples(example_index,:), 1, WIDTH);
   input_signal = weights.*input;
   output_index = 1:INPUTS: length(weights);
   neurons_outputs = zeros(WIDTH, 1);
@@ -42,4 +46,4 @@ for example_index = 1:size(examples)
   [value, index] =  max(neurons_outputs);
   actuals(example_index) = index-1;
 endfor
-score = sum((actuals-answers) == 0) / length(answers)
+score = sum((actuals-test_answers) == 0) / length(test_answers)
