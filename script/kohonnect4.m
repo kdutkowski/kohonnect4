@@ -9,7 +9,8 @@ end
 WIDTH = 7;
 HEIGHT = 6;
 INPUTS = WIDTH*HEIGHT;
-RATE = 0.01;
+RATE = 0.1;
+ITERATIONS = 100;
 
 weights = exprnd(1,WIDTH*INPUTS,1)';
 
@@ -25,13 +26,15 @@ test_answers = test_data(:, INPUTS+1);
 examples = data(:, 1:INPUTS);
 answers = data(:, INPUTS+1);
 
-for iteration = 1:100
+for iteration = 1:ITERATIONS
   for example_index = 1:size(examples)
     example = examples(example_index, :);
     from = 1+(answers(example_index))*INPUTS;
     to = (answers(example_index)+1)*INPUTS;
     weights(from:to) = normalize(weights(from:to) + RATE*(example-weights(from:to)));
   endfor
+  RATE = RATE / 2;
+  %RATE = RATE * exp(-iteration*HEIGHT/(200*ITERATIONS));
 endfor
 
 actuals = test_answers;
